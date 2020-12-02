@@ -1,33 +1,39 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is an abstract public class derived from Library item will be parent class for all periodicals
+// File: LibraryPeriodical.cs
+// This file creates an abstract LibraryPeriodical class that adds
+// volume and number.
+// LibraryPeriodical IS-A LibraryItem
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Program_1a
+namespace LibraryItems
 {
+    [Serializable]
+
     public abstract class LibraryPeriodical : LibraryItem
     {
-        private int _volume;  //the item's volume
-        private int _number;  //the item's Number
+        private int _volume; // The periodical's volume
+        private int _number; // The periodical's number
 
-        // Precondition:  theVolume > 0, theNumber > 0 and theCopyrightYear >= 0,
-        //                theTitle, theCallNumber, thePublisher may not be null or empty
-        // Postcondition: The library item has been initialized with the specified
-        //                values for title, publisher, copyright year, volume, number, and
-        //                call number. The item is not checked out.
-        public LibraryPeriodical(string theTitle, string thePublisher, int theCopyrightYear, int theLoanPeriod, string theCallNumber, int theVolume, int theNumber) : base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber)
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0, theVolume >= 1,
+        //                theNumber >= 1
+        //                theTitle and theCallNumber must not be null or empty
+        // Postcondition: The library periodical has been initialized with the specified
+        //                values for title, publisher, copyright year, loan period, 
+        //                call number, volume, and number. The item is not checked out.
+        public LibraryPeriodical(string theTitle, string thePublisher, int theCopyrightYear,
+            int theLoanPeriod, string theCallNumber, int theVolume, int theNumber) :
+            base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber)
         {
             Volume = theVolume;
             Number = theNumber;
-
-            ReturnToShelf(); // Make sure book is not checked out
         }
 
         public int Volume
@@ -38,7 +44,8 @@ namespace Program_1a
             {
                 return _volume;
             }
-            // Precondition:  value > 0
+
+            // Precondition:  value >= 1
             // Postcondition: The volume has been set to the specified value
             set
             {
@@ -53,14 +60,15 @@ namespace Program_1a
         public int Number
         {
             // Precondition:  None
-            // Postcondition: The Number has been returned
+            // Postcondition: The number has been returned
             get
             {
                 return _number;
             }
+
+            // Precondition:  value >= 1
+            // Postcondition: The number has been set to the specified value
             set
-            // Precondition:  value > 0
-            // Postcondition: The Number has been set to the specified value
             {
                 if (value >= 1)
                     _number = value;
@@ -71,13 +79,13 @@ namespace Program_1a
         }
 
         // Precondition:  None
-        // Postcondition: A string is returned representing the libary item's
-        //                data on separate lines
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
         public override string ToString()
         {
             string NL = Environment.NewLine; // NewLine shortcut
 
-            return base.ToString() + $"{NL}Volume: {Volume}{NL}Number: {Number}";
+            return $"Volume: {Volume}{NL}Number: {Number}{NL}{base.ToString()}";
         }
     }
 }

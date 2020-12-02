@@ -1,35 +1,45 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is a concrete Music class derived from the MediaItems parent class
+// File: LibraryMusic.cs
+// This file creates a concrete LibraryMusic class that adds
+// artist and number of tracks.
+// LibraryMusic IS-A LibraryMediaItem
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Program_1a
+namespace LibraryItems
 {
+    [Serializable]
+
     public class LibraryMusic : LibraryMediaItem
     {
-        private string _artist;  //The item's artist
-        private int _tracks;  //The item's track
-        private MediaType _medium;  //The item's medium
+        public const decimal DAILYLATEFEE = 0.50m; // Music's daily late fee
+        public const decimal MAXFEE = 20.00m;      // Max late fee
 
-        // Precondition:  theDuration and theCopyrightYear >= 0, theNumTracks >=1,
-        //                theTitle, theCallNumber, theArtist may not be null or empty
-        // Postcondition: The library music item has been initialized with the specified
-        //                values for title, author, publisher, copyright year, artist, medium, number of tracks, and
-        //                call number. The item is not checked out.
-        public LibraryMusic(string theTitle, string thePublisher, int theCopyrightYear, int theLoanPeriod, string theCallNumber, double theDuration, string theArtist, MediaType theMedium, int theNumberOfTracks) : base( theTitle, thePublisher, theLoanPeriod, theCopyrightYear, theCallNumber, theDuration)
+        private string _artist; // Music's artist
+        private int _numTracks; // Music's number of tracks
+
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0, theDuration >= 0,
+        //                theNumTracks >= 1
+        //                theTitle and theCallNumber must not be null or empty
+        // Postcondition: The movie has been initialized with the specified
+        //                values for title, publisher, copyright year, loan period, 
+        //                call number, duration, director, medium, and rating. The
+        //                item is not checked out.
+        public LibraryMusic(string theTitle, string thePublisher, int theCopyrightYear,
+            int theLoanPeriod, string theCallNumber, double theDuration, string theArtist,
+            MediaType theMedium, int theNumTracks) :
+            base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber, theDuration)
         {
             Artist = theArtist;
             Medium = theMedium;
-            NumTracks = theNumberOfTracks;
-
-            ReturnToShelf(); // Make sure book is not checked out
+            NumTracks = theNumTracks;
         }
 
         public string Artist
@@ -40,13 +50,14 @@ namespace Program_1a
             {
                 return _artist;
             }
+
             // Precondition:  value must not be null or empty
-            // Postcondition: The arist has been set to the specified value
+            // Postcondition: The artist has been set to the specified value
             set
             {
                 if (string.IsNullOrWhiteSpace(value)) // IsNullOrWhiteSpace includes tests for null, empty, or all whitespace
                     throw new ArgumentOutOfRangeException($"{nameof(Artist)}", value,
-                        $"{nameof(Artist)} must not be null or empty");
+                       $"{nameof(Artist)} must not be null or empty");
                 else
                     _artist = value.Trim();
             }
@@ -58,66 +69,67 @@ namespace Program_1a
             // Postcondition: The number of tracks has been returned
             get
             {
-                return _tracks;
+                return _numTracks;
             }
-            // Precondition:  value > 0
+
+            // Precondition:  value >= 1
             // Postcondition: The number of tracks has been set to the specified value
             set
             {
-                if (value > 0)
-                    _tracks = value;
+                if (value >= 1)
+                    _numTracks = value;
                 else
                     throw new ArgumentOutOfRangeException($"{nameof(NumTracks)}", value,
-                        $"{nameof(NumTracks)} must be > 0");
+                        $"{nameof(NumTracks)} must be >= 1");
             }
         }
 
         public override MediaType Medium
         {
             // Precondition:  None
-            // Postcondition: The copyright year has been returned
+            // Postcondition: The medium has been returned
             get
             {
                 return _medium;
             }
-            // Precondition:  MediaType must match the listed enums
+
+            // Precondition:  value from { CD, SACD, VINYL }
             // Postcondition: The medium has been set to the specified value
             set
             {
-                if (Enum.IsDefined(typeof(MediaType), value))
+                if (value == MediaType.CD || value == MediaType.SACD ||
+                    value == MediaType.VINYL)
                     _medium = value;
                 else
-                    throw new ArgumentOutOfRangeException($"{nameof(Medium)}", value,
-                                            $"{nameof(Medium)} invalid media type");
+                    throw new ArgumentOutOfRangeException($"{nameof(Medium)}",
+                        value, $"{nameof(Medium)} must be from {{CD, SACD, VINYL}}");
             }
         }
 
-        //Precondition: non-negative int
-        //Postcondition: total fee value returned
-        public override decimal CalcFee(int daysLate)
+        // Precondition:  daysLate >= 0
+        // Postcondition: The fee for returning the item the specified days late
+        //                has been returned
+        public override decimal CalcLateFee(int daysLate)
         {
-            const decimal dailyFee = 0.50M; //Daily fee of $0.50
-            const decimal feeLimit = 20.0M; //Max fee limit of $20
-            decimal totalFee;               //Daily fee * days late
+            decimal lateFee = 0.0M; // Late music fee
 
-            totalFee = dailyFee * daysLate;
+            ValidateDaysLate(daysLate);
 
-            if (totalFee <= feeLimit)
-            {
-                return totalFee;
-            }
-            else
-                return feeLimit;
+            lateFee = daysLate * DAILYLATEFEE;
+
+            // Make sure to cap the late fee
+            return Math.Min(lateFee, MAXFEE);
         }
 
         // Precondition:  None
-        // Postcondition: A string is returned representing the libary item's
-        //                data on separate lines
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
         public override string ToString()
         {
             string NL = Environment.NewLine; // NewLine shortcut
 
-            return base.ToString() + $"{NL}Artist: {Artist}{NL}# of Tracks: {NumTracks}{NL}Medium: {Medium}";
+            return $"{nameof(LibraryMusic)}{NL}Artist: {Artist}{NL}Num Tracks: {NumTracks}{NL}" +
+                $"{base.ToString()}";
         }
     }
 }

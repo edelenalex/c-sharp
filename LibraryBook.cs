@@ -1,76 +1,75 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is a concrete derived class from library item
+// File: LibraryBook.cs
+// This file creates a concrete LibraryBook class that adds
+// an author to the LibraryItem data. 
+// LibraryBook IS-A LibraryItem
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Program_1a
+namespace LibraryItems
 {
-    class LibraryBook : LibraryItem
+    [Serializable]
+    public class LibraryBook : LibraryItem
     {
-       
-        private string _author; //The book's author
+        public const decimal DAILYLATEFEE = 0.25m; // Book's daily late fee
 
-        // Precondition:  theCopyrightYear >= 0
-        //                theTitle, theAuthor, thePublisher, theCallNumber may not be null or empty
+        private string _author; // The book's author
+
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0
+        //                theTitle and theCallNumber must not be null or empty
         // Postcondition: The library book has been initialized with the specified
-        //                values for title, author, publisher, copyright year, and
-        //                call number. The item is not checked out.
-        public LibraryBook(string theTitle, string theAuthor, string thePublisher, int theCopyrightYear, int theLoanPeriod, string theCallNumber) : base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber)
+        //                values for title, publisher, copyright year, loan period, 
+        //                call number, and author. The item is not checked out.
+        public LibraryBook(string theTitle, string thePublisher, int theCopyrightYear,
+            int theLoanPeriod, string theCallNumber, string theAuthor) :
+            base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber)
         {
             Author = theAuthor;
-
-            ReturnToShelf(); // Make sure book is not checked out
         }
 
         public string Author
         {
             // Precondition:  None
-            // Postcondition: The Author has been returned
+            // Postcondition: The author has been returned
             get
             {
                 return _author;
             }
-            // Precondition:  value must not be null or empty
-            // Postcondition: The Author has been set to the specified value
+
+            // Precondition:  None
+            // Postcondition: The author has been set to the specified value
             set
             {
-                    if (string.IsNullOrWhiteSpace(value)) // IsNullOrWhiteSpace includes tests for null, empty, or all whitespace
-                        throw new ArgumentOutOfRangeException($"{nameof(Author)}", value,
-                            $"{nameof(Author)} must not be null or empty");
-                    else
-                        _author = value.Trim();
+                // Since empty author is OK, just change null to empty string
+                _author = (value == null ? string.Empty : value.Trim());
             }
         }
 
-        //Precondition: non-negative int
-        //Postcondition: total fee value returned
-        public override decimal CalcFee(int daysLate)
+        // Precondition:  daysLate >= 0
+        // Postcondition: The fee for returning the item the specified days late
+        //                has been returned
+        public override decimal CalcLateFee(int daysLate)
         {
-            const decimal dailyFee = 0.25M; //daily late fee
-            decimal totalFee;   //days late * daily fee
+            ValidateDaysLate(daysLate);
 
-            totalFee = dailyFee * daysLate;
-
-            return totalFee;
+            return daysLate * DAILYLATEFEE;
         }
 
         // Precondition:  None
-        // Postcondition: A string is returned representing the libary item's
-        //                data on separate lines
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
         public override string ToString()
         {
             string NL = Environment.NewLine; // NewLine shortcut
 
-            return base.ToString() + $"{NL}Author: {Author}";
+            return $"{nameof(LibraryBook)}{NL}Author: {Author}{NL}{base.ToString()}";
         }
-
-
     }
 }

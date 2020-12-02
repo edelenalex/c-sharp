@@ -1,38 +1,46 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is an abstract class library item that many other classe inside the library will be derived from
+// File: LibraryItem.cs
+// This file creates an abstract LibraryItem class that will serve
+// as the base class of a hierarchy of library items that keep
+// track of common information and can be checked out by
+// LibraryPatrons.
+// LibraryItem HAS-A LibraryPatron (when the item is checked out)
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Program_1a
+namespace LibraryItems
 {
+    [Serializable]
     public abstract class LibraryItem
     {
-        private string _title;  //The item's title
-        private string _publisher;  //The item's author
-        private int _copyrightYear; //The item's Copyright Year
-        private int _loanPeriod;  //The item's Loan Period
-        private string _callNumber;  //The item's call number
+        private string _title;      // The book's title
+        private string _publisher;  // The book's publisher
+        private int _copyrightYear; // The book's year of copyright
+        private string _callNumber; // The book's call number in the library
+        private int _loanPeriod;    // The item's loan period
 
-        // Precondition:  theCopyrightYear >= 0
-        //                theTitle, thePublisher, theCallNumber may not be null or empty
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0
+        //                theTitle and theCallNumber must not be null or empty
         // Postcondition: The library item has been initialized with the specified
-        //                values for title, loan period, publisher, copyright year, and
+        //                values for title, publisher, copyright year, loan period and
         //                call number. The item is not checked out.
-        public LibraryItem(string theTitle, string thePublisher, int theCopyrightYear, int theLoanPeriod, string theCallNumber)
+        public LibraryItem(string theTitle, string thePublisher, int theCopyrightYear,
+            int theLoanPeriod, string theCallNumber)
         {
             Title = theTitle;
             Publisher = thePublisher;
             CopyrightYear = theCopyrightYear;
-            CallNumber = theCallNumber;
             LoanPeriod = theLoanPeriod;
+            CallNumber = theCallNumber;
 
-            ReturnToShelf(); // Make sure book is not checked out
+            ReturnToShelf(); // Make sure item is not checked out
         }
 
         public string Title
@@ -104,7 +112,7 @@ namespace Program_1a
                 return _callNumber;
             }
 
-            // Precondition:  None
+            // Precondition:  value must not be null or empty
             // Postcondition: The call number has been set to the specified value
             set
             {
@@ -118,16 +126,15 @@ namespace Program_1a
 
         public int LoanPeriod
         {
-
-            //Precondition:  None
-            //Postcondition: The loan period has been returned
+            // Precondition:  None
+            // Postcondition: The loan period has been returned
             get
             {
                 return _loanPeriod;
             }
 
-            //Precondition: None
-            //Postcondition: The loan period has been set to the specified value
+            // Precondition:  value >= 0
+            // Postcondition: The loan period has been set to the specified value
             set
             {
                 if (value >= 0)
@@ -137,18 +144,24 @@ namespace Program_1a
                         $"{nameof(LoanPeriod)} must be >= 0");
             }
         }
-
         // Create HAS-A
         public LibraryPatron Patron
         {
             // Precondition:  None
             // Postcondition: The book's patron has been returned
-            get;
+            get; // Auto-implement is fine
 
+            // Helper
             // Precondition:  None
             // Postcondition: The book's patron has been set to the specified value
-            private set;
+            private set; // Auto-implement is fine 
         }
+
+        // Abstract method header
+        // Precondition:  daysLate >= 0
+        // Postcondition: The fee for returning the item the specified days late
+        //                has been returned
+        public abstract decimal CalcLateFee(int daysLate);
 
         // Precondition:  thePatron != null
         // Postcondition: The book is checked out by the specified patron
@@ -162,7 +175,6 @@ namespace Program_1a
 
         // Precondition:  None
         // Postcondition: The book is not checked out
-
         public void ReturnToShelf()
         {
             Patron = null; // Remove previously stored reference to patron
@@ -176,14 +188,9 @@ namespace Program_1a
             return Patron != null; // The item is checked out if there is a Patron
         }
 
-        //Precondition: None negative int
-        //Postcondition: To be determined by inherited classes
-        public abstract decimal CalcFee(int daysLate);
-
-
         // Precondition:  None
-        // Postcondition: A string is returned representing the libary item's
-        //                data on separate lines
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
         public override string ToString()
         {
             string NL = Environment.NewLine; // NewLine shortcut
@@ -195,7 +202,18 @@ namespace Program_1a
                 checkedOutBy = "Not Checked Out";
 
             return $"Title: {Title}{NL}Publisher: {Publisher}{NL}" +
-                $"Copyright: {CopyrightYear}{NL}Call Number: {CallNumber}{NL}Status: {checkedOutBy}";
+                $"Copyright: {CopyrightYear}{NL}Loan Period: {LoanPeriod}{NL}" +
+                $"Call Number: {CallNumber}{NL}{checkedOutBy}";
+        }
+
+        // HELPER METHOD - for derived classes
+        // Precondition:  daysLate >= 0
+        // Postcondition: If daysLate invalid, throw exception
+        protected void ValidateDaysLate(int daysLate)
+        {
+            if (daysLate < 0)
+                throw new ArgumentOutOfRangeException($"{nameof(daysLate)}", daysLate,
+                    $"{nameof(daysLate)} must be >= 0");
         }
     }
 }

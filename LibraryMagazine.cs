@@ -1,44 +1,63 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is a concrete class Magazine derived from the Periodical class
+// File: LibraryMagazine.cs
+// This file creates a concrete LibraryMagazine class that adds
+// no new data.
+// LibraryMagazine IS-A LibraryPeriodical
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Program_1a
+namespace LibraryItems
 {
+    [Serializable]
+
     public class LibraryMagazine : LibraryPeriodical
     {
-        // Precondition:  theVolume > 0, theNumber > 0 and theCopyrightYear >= 0,
-        //                theTitle, theCallNumber, thePublisher may not be null or empty
-        // Postcondition: The library item has been initialized with the specified
-        //                values for title, publisher, copyright year, volume, number, and
-        //                call number. The item is not checked out.
-        public LibraryMagazine(string theTitle, string thePublisher, int theCopyrightYear, int theLoanPeriod, string theCallNumber, int theVolume, int theNumber) : base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber, theVolume, theNumber)
+        public const decimal DAILYLATEFEE = 0.25m; // Magazine's daily late fee
+        public const decimal MAXFEE = 20.00m;      // Max late fee
+
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0, theVolume >= 1,
+        //                theNumber >= 1
+        //                theTitle and theCallNumber must not be null or empty
+        // Postcondition: The magazine has been initialized with the specified
+        //                values for title, publisher, copyright year, loan period, 
+        //                call number, volume, and number. The item is not checked out.
+        public LibraryMagazine(string theTitle, string thePublisher, int theCopyrightYear,
+            int theLoanPeriod, string theCallNumber, int theVolume, int theNumber) :
+            base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber, theVolume, theNumber)
         {
-            ReturnToShelf(); // Make sure book is not checked out
+            // No new data to initialize
         }
 
-        public override decimal CalcFee(int daysLate)
+        // Precondition:  daysLate >= 0
+        // Postcondition: The fee for returning the item the specified days late
+        //                has been returned
+        public override decimal CalcLateFee(int daysLate)
         {
-            const decimal feeLimit = 20.00M; //$20 fee limit
-            const decimal dailyFee = 0.25M; // $0.25 daily fee
-            decimal totalFee;               //days late * daily fee
+            decimal lateFee = 0.0M; // Late magazine fee
 
-            totalFee = dailyFee * daysLate;
+            ValidateDaysLate(daysLate);
 
-            if (totalFee <= feeLimit)
-            {
-                return totalFee;
-            }
-            else
-                return feeLimit;
+            lateFee = daysLate * DAILYLATEFEE;
+
+            // Make sure to cap the late fee
+            return Math.Min(lateFee, MAXFEE);
         }
 
+        // Precondition:  None
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
+        public override string ToString()
+        {
+            string NL = Environment.NewLine; // NewLine shortcut
+
+            return $"{nameof(LibraryMagazine)}{NL}{base.ToString()}";
+        }
     }
 }

@@ -1,43 +1,75 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is a concrete class derived from the Periodical parent class
+// File: LibraryJournal.cs
+// This file creates a concrete LibraryJournal class that adds
+// discipline and editor.
+// LibraryJournal IS-A LibraryPeriodical
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Program_1a
+namespace LibraryItems
 {
+    [Serializable]
+
     public class LibraryJournal : LibraryPeriodical
     {
-        private string _discipline; //the item's disicpline
-        private string _editor;  //the item's editor
+        public const decimal DAILYLATEFEE = 0.75m; // Journal's daily late fee
 
-        // Precondition:  theVolume > 0, theNumber > 0 and theCopyrightYear >= 0,
-        //                theTitle, theCallNumber, thePublisher may not be null or empty
-        // Postcondition: The library item has been initialized with the specified
-        //                values for title, publisher, copyright year, volume, number, and
-        //                call number. The item is not checked out.
-        public LibraryJournal(string theTitle, string thePublisher, int theCopyright, int theLoanPeriod, string theCallNumber, int theVolume, int theNumber, string theDiscipline, string theEditor) : base(theTitle, thePublisher, theCopyright, theLoanPeriod, theCallNumber, theVolume, theNumber)
+        private string _discipline; // The journal's discipline
+        private string _editor;     // The journal's editor
+
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0, theVolume >= 1,
+        //                theNumber >= 1
+        //                theTitle, theCallNumber, theDiscipline, and theEditor must not be null or empty
+        // Postcondition: The journal has been initialized with the specified
+        //                values for title, publisher, copyright year, loan period, 
+        //                call number, volume, number, discipline, and editor. The
+        //                item is not checked out.
+        public LibraryJournal(string theTitle, string thePublisher, int theCopyrightYear,
+            int theLoanPeriod, string theCallNumber, int theVolume, int theNumber,
+            string theDiscipline, string theEditor) :
+            base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber, theVolume, theNumber)
         {
             Discipline = theDiscipline;
             Editor = theEditor;
+        }
 
-            ReturnToShelf(); // Make sure book is not checked out
+        public string Discipline
+        {
+            // Precondition:  None
+            // Postcondition: The discipline has been returned
+            get
+            {
+                return _discipline;
+            }
+
+            // Precondition:  value must not be null or empty
+            // Postcondition: The discipline has been set to the specified value
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value)) // IsNullOrWhiteSpace includes tests for null, empty, or all whitespace
+                    throw new ArgumentOutOfRangeException($"{nameof(Discipline)}", value,
+                        $"{nameof(Discipline)} must not be null or empty");
+                else
+                    _discipline = value;
+            }
         }
 
         public string Editor
         {
             // Precondition:  None
-            // Postcondition: The Editor has been returned
+            // Postcondition: The editor has been returned
             get
             {
                 return _editor;
             }
+
             // Precondition:  value must not be null or empty
             // Postcondition: The editor has been set to the specified value
             set
@@ -46,49 +78,29 @@ namespace Program_1a
                     throw new ArgumentOutOfRangeException($"{nameof(Editor)}", value,
                         $"{nameof(Editor)} must not be null or empty");
                 else
-                    _editor = value.Trim();
+                    _editor = value;
             }
         }
 
-        public string Discipline
+        // Precondition:  daysLate >= 0
+        // Postcondition: The fee for returning the item the specified days late
+        //                has been returned
+        public override decimal CalcLateFee(int daysLate)
         {
-            // Precondition:  None
-            // Postcondition: The Discipline has been returned
-            get
-            {
-                return _discipline;
-            }
-            // Precondition:  value must not be null or empty
-            // Postcondition: The Discipline has been set to the specified value
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value)) // IsNullOrWhiteSpace includes tests for null, empty, or all whitespace
-                    throw new ArgumentOutOfRangeException($"{nameof(Discipline)}", value,
-                        $"{nameof(Discipline)} must not be null or empty");
-                else
-                    _discipline = value.Trim();
-            }
-        }
+            ValidateDaysLate(daysLate);
 
-        //Precondition: non-negative int
-        //Postcondition: total fee value returned
-        public override decimal CalcFee(int daysLate)
-        {
-            decimal totalFee;
-            const decimal fee = 0.75M;
-
-            totalFee = daysLate * fee;
-            return totalFee;
+            return daysLate * DAILYLATEFEE;
         }
 
         // Precondition:  None
-        // Postcondition: A string is returned representing the libary item's
-        //                data on separate lines
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
         public override string ToString()
         {
             string NL = Environment.NewLine; // NewLine shortcut
 
-            return base.ToString() + $"{NL}Discipline: {Discipline}{NL}Editor: {Editor}";
+            return $"{nameof(LibraryJournal)}{NL}Discipline: {Discipline}{NL}Editor: {Editor}{NL}" +
+                $"{base.ToString()}";
         }
     }
 }

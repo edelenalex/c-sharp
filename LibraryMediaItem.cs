@@ -1,35 +1,53 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is a abstract derived class from the abstract class LibraryItem
+// File: LibraryMediaItem.cs
+// This file creates an abstract LibraryMediaItem class that adds
+// media type and duration.
+// LibraryMediaItem IS-A LibraryItem
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Program_1a
+namespace LibraryItems
 {
+    [Serializable]
+
     public abstract class LibraryMediaItem : LibraryItem
     {
-        public enum MediaType { DVD, BLURAY, VHS, CD, SACD, VINYL }; //MultiMedia types
-        private double _duration; //Media items duration
+        public enum MediaType { DVD, BLURAY, VHS, CD, SACD, VINYL }; // Possible media types
 
-        // Precondition:  theCopyrightYear >= 0, theDuration > 0,
-        //                theTitle, the publisher, theCallNumber, loan period may not be null or empty
-        // Postcondition: The library item has been initialized with the specified
-        //                values for title, loan period, publisher, copyright year, and
-        //                call number. The item is not checked out.
-        public LibraryMediaItem(string theTitle, string thePublisher, int theLoanPeriod, int theCopyrightYear, string theCallNumber, double theDuration) : base(theTitle, thePublisher, theLoanPeriod, theCopyrightYear, theCallNumber)
+        private double _duration;    // The item's duration (in minutes)
+        protected MediaType _medium; // The item's medium, will be validated by the derived classes
+
+
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0, theDuration >= 0
+        //                theTitle and theCallNumber must not be null or empty
+        // Postcondition: The library media item has been initialized with the specified
+        //                values for title, publisher, copyright year, loan period, 
+        //                call number, and duration. The item is not checked out.
+        public LibraryMediaItem(string theTitle, string thePublisher, int theCopyrightYear,
+            int theLoanPeriod, string theCallNumber, double theDuration) :
+            base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber)
         {
             Duration = theDuration;
-
-            ReturnToShelf(); // Make sure item is not checked out
         }
 
+        // Abstract property header
+        public abstract MediaType Medium
+        {
+            // Precondition:  None
+            // Postcondition: The medium has been returned
+            get;
 
+            // Precondition:  Varies - See concrete implementation
+            // Postcondition: The medium has been set to the specified value
+            set;
+        }
 
         public double Duration
         {
@@ -39,8 +57,9 @@ namespace Program_1a
             {
                 return _duration;
             }
+
             // Precondition:  value >= 0
-            // Postcondition: The duration year has been set to the specified value
+            // Postcondition: The duration has been set to the specified value
             set
             {
                 if (value >= 0)
@@ -51,18 +70,14 @@ namespace Program_1a
             }
         }
 
-        public abstract MediaType Medium { get; set; } //Auto-implentaion of MediaType Medium 
-
         // Precondition:  None
-        // Postcondition: A string is returned representing the libary item's
-        //                data on separate lines
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
         public override string ToString()
         {
             string NL = Environment.NewLine; // NewLine shortcut
 
-            return base.ToString() + $"{NL}Duration: {Duration}";
+            return $"Duration: {Duration}{NL}Medium: {Medium}{NL}{base.ToString()}";
         }
-
-
     }
 }

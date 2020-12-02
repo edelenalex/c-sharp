@@ -1,76 +1,67 @@
-﻿// Program 1a
+﻿// Program 1A
 // CIS 200-01
-// Grading ID: T1233
-// Due: 2/12/2020
+// Due: 2/13/2020
+// By: Andrew L. Wright (Students use Grading ID)
 
-//This is a derived concrete class from the Library Media Items parent class
+// File: LibraryMovie.cs
+// This file creates a concrete LibraryMovie class that adds
+// director and rating.
+// LibraryMovie IS-A LibraryMediaItem
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Program_1a
+namespace LibraryItems
 {
-    class LibraryMovie : LibraryMediaItem
+    [Serializable]
+
+    public class LibraryMovie : LibraryMediaItem
     {
-        public enum MPAARatings { G, PG, PG13, R, NC17, U }; //MPAA rating types
-        private MPAARatings _ratings; //MPAA ratings
-        private MediaType _medium;  //Movie's Mediatype medium
-        private string _director;  //Moive's director
+        public const decimal DAILYLATEFEEDVD = 1.00m; // DVD/VHS's daily late fee
+        public const decimal DAILYLATEFEEBLU = 1.50m; // BluRay's daily late fee
+        public const decimal MAXFEE = 25.00m;         // Max late fee
 
-        // Precondition:  theCopyrightYear >= 0, theDuration > 0,
-        //                theTitle, the publisher, theCallNumber, theMedium, theDirector, the Rating, loan period may not be null or empty
-        // Postcondition: The library item has been initialized with the specified
-        //                values for title, loan period, publisher, copyright year, and
-        //                call number, medium, director, rating. The item is not checked out.
-        public LibraryMovie(string theTitle, string thePublisher, int theCopyrightYear, int theLoanPeriod, string theCallNumber, double theDuration, string theDirector, MediaType theMedium, MPAARatings theRating) : base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber, theDuration)
+        public enum MPAARatings { G, PG, PG13, R, NC17, U }; // Possible movie ratings
+
+        private string _director;    // The movie's director
+        private MPAARatings _rating; // The movie's rating
+
+        // Precondition:  theCopyrightYear >= 0, theLoanPeriod >= 0, theDuration >= 0
+        //                theTitle,theCallNumber, and theDirector must not be null or empty
+        // Postcondition: The movie has been initialized with the specified
+        //                values for title, publisher, copyright year, loan period, 
+        //                call number, duration, director, medium, and rating. The
+        //                item is not checked out.
+        public LibraryMovie(String theTitle, String thePublisher, int theCopyrightYear,
+            int theLoanPeriod, String theCallNumber, double theDuration, String theDirector,
+            MediaType theMedium, MPAARatings theRating) :
+            base(theTitle, thePublisher, theCopyrightYear, theLoanPeriod, theCallNumber, theDuration)
         {
-            Medium = theMedium;
             Director = theDirector;
+            Medium = theMedium;
             Rating = theRating;
-
-            ReturnToShelf(); // Make sure item is not checked out
         }
-
 
         public string Director
         {
-            //Precondition:  None
-            //Postcondition: The Director has been returned
+            // Precondition:  None
+            // Postcondition: The director has been returned
             get
             {
                 return _director;
             }
-            // Precondition:  None
-            // Postcondition: The Director has been set to the specified value
+
+            // Precondition:  value must not be null or empty
+            // Postcondition: The director has been set to the specified value
             set
             {
                 if (string.IsNullOrWhiteSpace(value)) // IsNullOrWhiteSpace includes tests for null, empty, or all whitespace
                     throw new ArgumentOutOfRangeException($"{nameof(Director)}", value,
-                        $"{nameof(Director)} must not be null or empty");
+                       $"{nameof(Director)} must not be null or empty");
                 else
                     _director = value.Trim();
-            }
-        }
-
-        public override MediaType Medium
-        {
-            //Precondition:  None
-            //Postcondition: The Medium has been returned
-            get
-            {
-                return _medium;
-            }
-            // Precondition:  medium must be BLURAY, DVD, or VHS
-            // Postcondition: The Medium has been set to the specified value
-            set
-            {
-                if (Medium == MediaType.BLURAY || Medium == MediaType.DVD || Medium == MediaType.VHS)
-                    _medium = value;
-                else
-                    throw new ArgumentOutOfRangeException($"{nameof(Medium)}", value,
-                                            $"{nameof(Medium)} invalid media type");
             }
         }
 
@@ -80,59 +71,72 @@ namespace Program_1a
             // Postcondition: The rating has been returned
             get
             {
-                return _ratings;
+                return _rating;
             }
 
-            // Precondition:  Rating must be defined in the ENUM
-            // Postcondition: The Rating has been set to the specified value
+            // Precondition:  None
+            // Postcondition: The rating has been set to the specified value
             set
             {
                 if (Enum.IsDefined(typeof(MPAARatings), value))
-                    _ratings = value;
+                    _rating = value;
                 else
                     throw new ArgumentOutOfRangeException($"{nameof(Rating)}", value,
-                        $"{nameof(Rating)} invalid MPAA Rating");
+                        $"{nameof(Rating)} must be from MPAARatings");
             }
         }
 
-        //Precondition: non-negative int
-        //Postcondition: total fee value returned
-        public override decimal CalcFee(int daysLate)
+        public override MediaType Medium
         {
-            const decimal dailyLowFee = 1.00M;  //Daily fee for VHS and DVD
-            const decimal dailyHiFee = 1.50M;  //Daily fee for BLURAY
-            const decimal feeLimit = 25.00M;  //Maximum allowed fee
-            decimal feeTotal;   //fee * days late
+            // Precondition:  None
+            // Postcondition: The medium has been returned
+            get
+            {
+                return _medium;
+            }
+
+            // Precondition:  value from { DVD, BLURAY, VHS }
+            // Postcondition: The medium has been set to the specified value
+            set
+            {
+                // if (value >= MediaType.DVD && value <= MediaType.VHS)
+                // OR
+                if (value == MediaType.BLURAY || value == MediaType.DVD ||
+                    value == MediaType.VHS)
+                    _medium = value;
+                else
+                    throw new ArgumentOutOfRangeException($"{nameof(Medium)}",
+                        value, $"{nameof(Medium)} must be from {{DVD, BLURAY, VHS}}");
+            }
+        }
+
+        // Precondition:  daysLate >= 0
+        // Postcondition: The fee for returning the item the specified days late
+        //                has been returned
+        public override decimal CalcLateFee(int daysLate)
+        {
+            decimal lateFee = 0.0M; // Late movie fee
+
+            ValidateDaysLate(daysLate);
 
             if (Medium == MediaType.BLURAY)
-            {
-                feeTotal = dailyHiFee * daysLate;
-            }
+                lateFee = daysLate * DAILYLATEFEEBLU;
             else
-            {
-                feeTotal = daysLate * dailyLowFee;
-            }
+                lateFee = daysLate * DAILYLATEFEEDVD;
 
-            if (feeTotal <= feeLimit)
-            {
-                return feeTotal;
-            }
-            else
-            {
-                return feeLimit;
-            }
+            // Make sure to cap the late fee
+            return Math.Min(lateFee, MAXFEE);
         }
 
         // Precondition:  None
-        // Postcondition: A string is returned representing the libary item's
-        //                data on separate lines
-
+        // Postcondition: A string is returned presenting the libary item's data on
+        //                separate lines
         public override string ToString()
         {
             string NL = Environment.NewLine; // NewLine shortcut
 
-            return base.ToString() + $"{NL}Director: {Director}{NL}Medium: {Medium}{NL}Rating: {Rating}";
+            return $"{nameof(LibraryMovie)}{NL}Director: {Director}{NL}Rating: {Rating}{NL}" + 
+                $"{base.ToString()}";
         }
-
     }
 }
