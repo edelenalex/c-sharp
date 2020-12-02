@@ -15,8 +15,6 @@ using System.Text;
 
 namespace LibraryItems
 {
-    [Serializable]
-
     public abstract class LibraryMediaItem : LibraryItem
     {
         public enum MediaType { DVD, BLURAY, VHS, CD, SACD, VINYL }; // Possible media types

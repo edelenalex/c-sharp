@@ -15,7 +15,6 @@ using System.Text;
 
 namespace LibraryItems
 {
-    [Serializable]
     public class LibraryBook : LibraryItem
     {
         public const decimal DAILYLATEFEE = 0.25m; // Book's daily late fee

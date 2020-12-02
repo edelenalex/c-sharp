@@ -15,8 +15,6 @@ using System.Text;
 
 namespace LibraryItems
 {
-    [Serializable]
-
     public abstract class LibraryPeriodical : LibraryItem
     {
         private int _volume; // The periodical's volume

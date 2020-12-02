@@ -15,8 +15,6 @@ using System.Text;
 
 namespace LibraryItems
 {
-    [Serializable]
-
     public class LibraryMusic : LibraryMediaItem
     {
         public const decimal DAILYLATEFEE = 0.50m; // Music's daily late fee

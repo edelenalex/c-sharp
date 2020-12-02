@@ -15,8 +15,6 @@ using System.Text;
 
 namespace LibraryItems
 {
-    [Serializable]
-
     public class LibraryMovie : LibraryMediaItem
     {
         public const decimal DAILYLATEFEEDVD = 1.00m; // DVD/VHS's daily late fee

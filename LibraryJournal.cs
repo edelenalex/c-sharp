@@ -15,8 +15,6 @@ using System.Text;
 
 namespace LibraryItems
 {
-    [Serializable]
-
     public class LibraryJournal : LibraryPeriodical
     {
         public const decimal DAILYLATEFEE = 0.75m; // Journal's daily late fee

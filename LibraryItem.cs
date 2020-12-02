@@ -1,7 +1,7 @@
-﻿// Program 1A
+﻿// Program 4
 // CIS 200-01
-// Due: 2/13/2020
-// By: Andrew L. Wright (Students use Grading ID)
+// Due: 4/15/2020
+// By: Grading ID- T1233
 
 // File: LibraryItem.cs
 // This file creates an abstract LibraryItem class that will serve
@@ -17,8 +17,7 @@ using System.Text;
 
 namespace LibraryItems
 {
-    [Serializable]
-    public abstract class LibraryItem
+    public abstract class LibraryItem : IComparable<LibraryItem>
     {
         private string _title;      // The book's title
         private string _publisher;  // The book's publisher
@@ -214,6 +213,34 @@ namespace LibraryItems
             if (daysLate < 0)
                 throw new ArgumentOutOfRangeException($"{nameof(daysLate)}", daysLate,
                     $"{nameof(daysLate)} must be >= 0");
+        }
+
+        // Precondition:  None
+        // Postcondition: items will be compared by title then publisher, call number, copyright year, and loan number in that order
+        public int CompareTo(LibraryItem other)
+        {
+            if (this.Title.CompareTo(other.Title) != 0)  //Compares title first
+            {
+                return this.Title.CompareTo(other.Title);
+            }
+            else if (this.Publisher.CompareTo(other.Publisher) != 0)  //Then publisher in the event the title is the same
+            {
+                return this.Publisher.CompareTo(other.Publisher);
+            }
+            else if (this.CallNumber.CompareTo(other.CallNumber) != 0)  //Then Call Number
+            {
+                return this.CallNumber.CompareTo(other.CallNumber);
+            }
+            else if (this.CopyrightYear.CompareTo(other.CopyrightYear) != 0) //compares Copyright year
+            {
+                return this.CopyrightYear.CompareTo(other.CopyrightYear);
+            }
+            else if (this.LoanPeriod.CompareTo(other.LoanPeriod) !=0) //Finally compares loan period
+            {
+                return this.LoanPeriod.CompareTo(other.LoanPeriod);
+            }
+            else
+                return 0;
         }
     }
 }
