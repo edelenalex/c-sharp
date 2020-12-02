@@ -1,84 +1,81 @@
-﻿// Program 0
-//Grading ID: T1233
-//Due: January 27, 2020
-//CIS 200-01
-// Starting Point
-
-// File: LibraryPatron.cs
-// This file creates a simple LibraryPatron class capable of tracking
-// the patron's name and ID.
+﻿// Program 1a
+// CIS 200-01
+// Grading ID: T1233
+// Due: 2/12/2020
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-
-public class LibraryPatron
+namespace Program_1a
 {
-    private string _patronName; // Name of the patron
-    private string _patronID;   // ID of the patron
-
-    // Precondition:  None
-    // Postcondition: The patron has been initialized with the specified name
-    //                and ID
-    public LibraryPatron(string name, string id)
+    public class LibraryPatron
     {
-        PatronName = name;
-        PatronID = id;
-    }
+        private string _patronName; // Name of the patron
+        private string _patronID;   // ID of the patron
 
-    public string PatronName
-    {
-        // Precondition:  None
-        // Postcondition: The patron's name has been returned
-        get
+        // Precondition:  name and id must not be null or empty
+        // Postcondition: The patron has been initialized with the specified name
+        //                and ID
+        public LibraryPatron(string name, string id)
         {
-            return _patronName;
+            PatronName = name;
+            PatronID = id;
         }
 
-        // Precondition:  None
-        // Postcondition: The patron's name has been set to the specified value
-        set
+        public string PatronName
         {
-            if (string.IsNullOrWhiteSpace(value))
+            // Precondition:  None
+            // Postcondition: The patron's name has been returned
+            get
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, $"{nameof(PatronName)} must be included");
+                return _patronName;
             }
-            _patronName = value.Trim();
-        }
-    }
 
-    public string PatronID
-    {
-        // Precondition:  None
-        // Postcondition: The patron's ID has been returned
-        get
-        {
-            return _patronID;
-        }
-
-        // Precondition:  None
-        // Postcondition: The patron's ID has been set to the specified value
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
+            // Precondition:  value must not be null or empty
+            // Postcondition: The patron's name has been set to the specified value
+            set
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, $"{nameof(PatronID)} must be included");
+                if (string.IsNullOrWhiteSpace(value)) // IsNullOrWhiteSpace includes tests for null, empty, or all whitespace
+                    throw new ArgumentOutOfRangeException($"{nameof(PatronName)}", value,
+                        $"{nameof(PatronName)} must not be null or empty");
+                else
+                    _patronName = value.Trim();
             }
-            _patronID = value.Trim();
         }
+
+        public string PatronID
+        {
+            // Precondition:  None
+            // Postcondition: The patron's ID has been returned
+            get
+            {
+                return _patronID;
+            }
+
+            // Precondition:  value must not be null or empty
+            // Postcondition: The patron's ID has been set to the specified value
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value)) // IsNullOrWhiteSpace includes tests for null, empty, or all whitespace
+                    throw new ArgumentOutOfRangeException($"{nameof(PatronID)}", value,
+                        $"{nameof(PatronID)} must not be null or empty");
+                else
+                    _patronID = value.Trim();
+            }
+        }
+
+        // Precondition:  None
+        // Postcondition: A string is returned presenting the libary patron's data on
+        //                separate lines
+        public override string ToString()
+        {
+            string NL = Environment.NewLine; // NewLine shortcut
+
+            return $"Name: {PatronName}{NL}ID: {PatronID}";
+        }
+
     }
-
-    // Precondition:  None
-    // Postcondition: A string is returned presenting the libary patron's data on
-    //                separate lines
-    public override string ToString()
-    {
-        string NL = Environment.NewLine; // NewLine shortcut
-
-        return $"Name: {PatronName}{NL}ID: {PatronID}";
-    }
-
 }
-
