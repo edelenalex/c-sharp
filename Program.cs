@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Program1
+namespace Prog3
 {
     static class Program
     {
@@ -16,7 +15,7 @@ namespace Program1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Program1());
+            Application.Run(new RegForm());
         }
     }
 }

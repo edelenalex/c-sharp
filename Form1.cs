@@ -1,9 +1,4 @@
-﻿//Grading ID: L5899
-//Section: 75
-//Program 1
-//Due: September 24, 2019
-//This GUI program will take users inputs of room measurements and calculate the minimum amount of paint needed to cover the room and how many gallons to purchase.
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,46 +8,230 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Program1
+namespace Program_2
 {
-    public partial class Program1 : Form
+    public partial class Program2 : Form
     {
-        public Program1()
+        public Program2()
         {
             InitializeComponent();
         }
 
-        //This event will take the users inputs and store them as the below listed variables and then run calculations and output the results
-        private void CalcBtn_Click(object sender, EventArgs e)
+        private void RegisterBtn_Click(object sender, EventArgs e)
         {
-            //Declaring all input, output and calculation variables
-            const int doorSubtractor = 21;
-            const int windowSubtractor = 12;
-            const int coverage = 400;
-            double lengthOfWalls;
-            double heightOfWalls;
-            int doorNum;
-            int windowNum;
-            int coatNum;
-            double squareFt;
-            double totalMinPaint;
-            int gallonsToBuy;
+            const double senior = 90;
+            const double junior = 60;
+            const double sophmore = 30;
+            char lastNameLtr;
+            double creditHrs;
+            string date;
+            string time;
+            const string upperClassAD = "11:30 am";
+            const string upperClassEI = "2:00 pm";
+            const string upperClassJO = "4:00 pm";
+            const string upperClassPS = "8:30 am";
+            const string upperClassTZ = "10:00 am";
+            const string seniorDay = "Monday, Nov. 4th";
+            const string juniorDay = "Tuesday, Nov. 5th";
+            const string firstSophDay = "Wednesday, Nov. 6th";
+            const string secondSophDay = "Thursday, Nov. 7th";
+            const string firstFreshDay = "Friday, Nov. 8th";
+            const string secondFreshDay = "Monday, Nov. 11th";
+            const string underClassAB = "4:00 pm";
+            const string underClassCD = "8:30 am";
+            const string underClassEF = "10:00 am";
+            const string underClassGI = "11:30 am";
+            const string underClassJL = "2:00 pm";
+            const string underClassMO = "4:00 pm";
+            const string underClassPQ = "8:30 am";
+            const string underClassRS = "10:00 am";
+            const string underClassTV = "11:30 am";
+            const string underClassWZ = "2:00 pm";
+            
 
-            //Parsing inputs from the GUI form for further calculations
-            lengthOfWalls = double.Parse(wallLengthTxt.Text);
-            heightOfWalls = double.Parse(wallHeightTxt.Text);
-            doorNum = int.Parse(numDoorsTxt.Text);
-            windowNum = int.Parse(numWindowsTxt.Text);
-            coatNum = int.Parse(numCoatsTxt.Text);
 
-            //Calculating the minimum paint needed and the number of gallons to puchase
-            squareFt = (lengthOfWalls * heightOfWalls) - (doorNum * doorSubtractor) - (windowNum * windowSubtractor);
-            totalMinPaint = (squareFt * coatNum) / coverage;
-            gallonsToBuy = (int)Math.Ceiling(totalMinPaint);
-
-            //Output to the GUI form post calulations
-            minGallonsOutputLbl.Text = $"{totalMinPaint:F1}";
-            gallonsToBuyOutputLbl.Text = $"{gallonsToBuy}";
+            if (char.TryParse(lastNameLtrTxt.Text, out lastNameLtr) && lastNameLtr >= 'A' && lastNameLtr <= 'Z')
+            {
+                if (double.TryParse(creditHrsTxt.Text, out creditHrs) && creditHrs >= 0)
+                {
+                    if (creditHrs > senior)
+                    {
+                        date = seniorDay;
+                        if (lastNameLtr <= 'D')
+                        {
+                            time = upperClassAD;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'I')
+                        {
+                            time = upperClassEI;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'O')
+                        {
+                            time = upperClassJO;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'S')
+                        {
+                            time = upperClassPS;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else
+                        {
+                            time = upperClassTZ;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                    }
+                    else if (creditHrs > junior)
+                    {
+                        date = juniorDay;
+                        if (lastNameLtr <= 'D')
+                        {
+                            time = upperClassAD;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'I')
+                        {
+                            time = upperClassEI;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'O')
+                        {
+                            time = upperClassJO;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'S')
+                        {
+                            time = upperClassPS;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else
+                        {
+                            time = upperClassTZ;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                    }
+                    else if (creditHrs > sophmore && lastNameLtr <= 'B' || lastNameLtr > 'O')
+                    {
+                        date = firstSophDay;
+                        if (lastNameLtr >= 'W')
+                        {
+                            time = underClassWZ;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr >= 'T')
+                        {
+                            time = underClassTV;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr >= 'R')
+                        {
+                            time = underClassRS;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr >= 'P')
+                        {
+                            time = underClassPQ;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else
+                        {
+                            time = underClassAB;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                    }
+                    else if (creditHrs > sophmore && lastNameLtr >= 'C' && lastNameLtr <= 'O')
+                    {
+                        date = secondSophDay;
+                        if (lastNameLtr <= 'D')
+                        {
+                            time = underClassCD;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'F')
+                        {
+                            time = underClassEF;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'I')
+                        {
+                            time = underClassGI;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'L')
+                        {
+                            time = underClassJL;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else
+                        {
+                            time = underClassMO;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                    }
+                    else if (creditHrs < sophmore && lastNameLtr <= 'B' || lastNameLtr >= 'P')
+                    {
+                        date = firstFreshDay;
+                        if (lastNameLtr >= 'W')
+                        {
+                            time = underClassWZ;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr >= 'T')
+                        {
+                            time = underClassTV;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr >= 'R')
+                        {
+                            time = underClassRS;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr >= 'P')
+                        {
+                            time = underClassPQ;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else
+                        {
+                            time = underClassAB;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                    }
+                    else
+                    {
+                        date = secondFreshDay;
+                        if (lastNameLtr <= 'D')
+                        {
+                            time = underClassCD;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'F')
+                        {
+                            time = underClassEF;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'I')
+                        {
+                            time = underClassGI;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else if (lastNameLtr <= 'L')
+                        {
+                            time = underClassJL;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                        else
+                        {
+                            time = underClassMO;
+                            dateTimeOutputLbl.Text = $"{date} @ {time}";
+                        }
+                    }
+                }
+                else MessageBox.Show("Enter a valid number of credit hours");
+            }
+                else MessageBox.Show("Enter a valid last initial");
         }
     }
 }
